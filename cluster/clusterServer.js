@@ -1,38 +1,38 @@
 const cluster = require("cluster");
 const os = require("os");
-const path = require("path");
-const { execFile } = require("child_process");
 
 const numCPUs = os.cpus().length;
 
 if (cluster.isMaster) {
-    console.log(`Master process is running. PID: ${process.pid}`);
-    console.log(`Forking ${numCPUs} worker(s)...`);
+    console.log(`Master process running. PID: ${process.pid}`);
+    console.log(`Forking ${numCPUs} workers...`);
 
     for (let i = 0; i < numCPUs; i++) {
         cluster.fork();
     }
 
     cluster.on("exit", (worker, code, signal) => {
-        console.log(`Worker ${worker.process.pid} died. Code: ${code}, Signal: ${signal}`);
-        console.log("Starting a new worker...");
+        console.log(`Worker ${worker.process.pid} died. Restarting...`);
         cluster.fork();
     });
+
 } else {
-    // Worker process
     const express = require("express");
     const app = express();
 
-    app.get("/", (req, res) => {
-        console.log(path.join(__dirname, "child_process", "spawn.js"));
+    app.get("/heavy", (req, res) => {
+        function fibonacci(n) {
+            return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+        }
 
-        execFile("node", [spawnPath], (error, stdout, stderr) => {
-            if (error) {
-                console.error("Error:", error);
-                return res.status(500).send("Something went wrong!");
-            }
-            res.send(`<pre>${stdout}</pre>`);
-        });
+        const num = 40;
+        const result = fibonacci(num);
+
+        res.send(`Worker ${process.pid} calculated Fibonacci(${num}) = ${result}`);
+    });
+
+    app.get("/", (req, res) => {
+        res.send(`Hello from Worker ${process.pid}`);
     });
 
     const PORT = 3005;

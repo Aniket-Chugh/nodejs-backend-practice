@@ -13,7 +13,11 @@
   "dependencies": {
     "child_process": "^1.0.2",
     "cluster": "^0.7.7",
+    "dgram": "^1.0.1",
     "express": "^5.1.0",
+    "net": "^1.0.2",
+    "noble": "^1.9.1",
+    "noble-winrt": "^0.1.1",
     "os": "^0.1.2"
   },
   "repository": {

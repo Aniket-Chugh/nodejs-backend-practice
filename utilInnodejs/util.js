@@ -17,6 +17,6 @@ const obj = {
 console.log("Util inspect:", util.inspect(obj, { depth: null, colors: true }));
 
 // console.log(util.inspect(obj, { depth: null }));
-// console.log(obj);
+console.log(obj);
 
 // deep nested ke liye best hai util.inspec
