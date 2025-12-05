@@ -1,18 +1,12 @@
-import net from "net";
+import { Server } from "socket.io";
 
-const server = net.createServer((socket) => {
-    console.log("Client connected");
+const io = new Server(3000);
 
-    socket.on("data", (data) => {
-        console.log("Received:", data.toString());
-        socket.write("Hello from TCP server!");
-    });
+io.on("connection", (socket) => {
+  console.log("User connected");
 
-    socket.on("end", () => {
-        console.log("Client disconnected");
-    });
-});
-
-server.listen(4000, () => {
-    console.log("TCP Socket server on port 4000");
+  // Event-based communication
+  socket.on("sendMsg", (msg) => {
+    io.emit("receiveMsg", msg);
+  });
 });
