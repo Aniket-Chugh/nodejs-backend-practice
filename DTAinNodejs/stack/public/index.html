@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Browser Back Stack (Node.js)</title>
+</head>
+<body style="text-align:center; margin-top:50px;">
+
+  <h2>Browser Navigation (HTML + Node)</h2>
+
+  <button onclick="visit('Home')">Home</button>
+  <button onclick="visit('About')">About</button>
+  <button onclick="visit('Contact')">Contact</button>
+
+  <br><br>
+
+  <button onclick="goBack()">⬅ Back</button>
+  <button onclick="goForward()">➡ Forward</button>
+
+  <h3 id="page"></h3>
+
+  <script>
+    async function loadState() {
+      const res = await fetch("/state");
+      const data = await res.json();
+      document.getElementById("page").innerText =
+        "Current Page: " + data.current;
+    }
+
+    async function visit(page) {
+      const res = await fetch("/visit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ page })
+      });
+      const data = await res.json();
+      document.getElementById("page").innerText =
+        "Current Page: " + data.current;
+    }
+
+    async function goBack() {
+      const res = await fetch("/back", { method: "POST" });
+      const data = await res.json();
+      document.getElementById("page").innerText =
+        "Current Page: " + data.current;
+    }
+
+    async function goForward() {
+      const res = await fetch("/forward", { method: "POST" });
+      const data = await res.json();
+      document.getElementById("page").innerText =
+        "Current Page: " + data.current;
+    }
+
+    loadState();
+  </script>
+
+</body>
+</html>
